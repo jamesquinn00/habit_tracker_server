@@ -14,7 +14,7 @@ describe('auth controller', () => {
         it('returns a token, success status, and status code 200', async () => {
             testToken = {
                 success: true,
-                token: "Bearer c4471869d40cad474e66dc88e5806e3dd454644ca24996dbbdb0350d007c4dfbcfbd35e83b3b4fbc5ebec8532f0a84a5ea414be82fa0b848162f9c718e932cf3"
+                token: `Bearer ${porcess.env.TEST_TOKEN_SECRET}`
             }
             jest.spyOn(User, 'findByEmail');
 
