@@ -1,6 +1,6 @@
-const Habit = require('../../../models/habit');
+const User = require('../../../models/user');
 
-describe('Habit', () => {
+describe('User', () => {
     let api;
 
     beforeEach(async () => {
