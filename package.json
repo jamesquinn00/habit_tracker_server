@@ -1,0 +1,30 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "seedDev": "node db/seeds.js",
+    "test": "jest --setupFiles ./tests/integration/config.js --watchAll --detectOpenHandles --runInBand --verbose --silent=false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kstephano/habit_tracker_server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kstephano/habit_tracker_server/issues"
+  },
+  "homepage": "https://github.com/kstephano/habit_tracker_server#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^27.4.4",
+    "supertest": "^6.1.6"
+  }
+}

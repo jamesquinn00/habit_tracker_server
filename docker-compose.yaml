@@ -1,0 +1,17 @@
+version: '3'
+services:
+  api:
+    image: node:latest
+    working_dir: /code
+    volumes:
+      - type: bind
+        source: ./api
+        target: /code
+
+  db:
+    image: mongo:latest
+    volumes:
+      - "./db/seeds.js:/docker-entrypoint-initdb.d/seeds.js:ro"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=AATTWM
+      - MONGO_INITDB_ROOT_PASSWORD=habitspass

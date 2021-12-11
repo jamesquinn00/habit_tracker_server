@@ -1,4 +1,4 @@
-describe('auth endpoints', () => {
+describe('habits endpoints', () => {
     let api;
 
     beforeEach(async () => {
@@ -15,4 +15,10 @@ describe('auth endpoints', () => {
     });
 
     // TODO: tests
+    it('should return a list of all habits for a single user', async () => {
+        const res = await request(api).get('/habits/testUser1@email.com');
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.length).toEqual(1);
+    });
+
 })
