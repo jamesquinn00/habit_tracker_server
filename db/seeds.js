@@ -1,12 +1,12 @@
 const db = connect("mongodb://localhost:27017/habits");
 
 db.users.drop();
-db.userCredentials.drop();
 
 db.users.insertOne(
     { 
-        useremail: "initialUser@email.com",
+        userEmail: "initialUser@email.com",
         passwordDigest: "password",
+        userName: "Initial User",
         habits: [
             {
                 habitName: "Water",
