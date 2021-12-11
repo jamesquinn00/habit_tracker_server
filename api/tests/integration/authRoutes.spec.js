@@ -14,5 +14,27 @@ describe('auth endpoints', () => {
         api.close(done);
     });
 
-    // TODO: tests
-})
+    it('should create a new user in the database', async () => {
+        const res = await request(api)
+            .post('/auth/register')
+            .send({
+                userEmail: "testUser4@email.com",
+                password: "Test Password",
+                userName: "Test User 4"
+            });
+            expect(res.statusCode).toEqual(201);
+            expect(res.body).toEqual({ msg: "User created" });
+    });
+
+    it('should login a user into the website', async () => {
+        const res = await request(api)
+            .post('/auth/login')
+            .send({
+                userEmail: "testUser4@email.com",
+                password: "Test Password"
+            });
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveProperty("success");
+            expect(res.body).toHaveProperty("token");
+    });
+});

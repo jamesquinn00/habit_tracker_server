@@ -14,11 +14,13 @@ describe('habits endpoints', () => {
         api.close(done);
     });
 
-    // TODO: tests
-    it('should return a list of all habits for a single user', async () => {
-        const res = await request(api).get('/habits/testUser1@email.com');
+    it('should return a list containing top streaks and user names for a single habit', async () => {
+        const res = await request(api).get('/habits/water');
         expect(res.statusCode).toEqual(200);
-        expect(res.body.length).toEqual(1);
+        expect(res.body.length).toEqual(2);
+        expect(res.body).toContain({
+            userName: "test user 1",
+            topStreak: 5
+        });
     });
-
 })
