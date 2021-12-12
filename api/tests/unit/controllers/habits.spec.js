@@ -20,7 +20,7 @@ describe('habits controller', () => {
 
     afterAll(() => jest.resetAllMocks());
 
-    describe('index', () => {
+    describe('leaderboard', () => {
         it('returns a list containing top streaks and user names with 200 status code', async () => {
             const leaderboard = [
                 { userName: "test user 1", topStreak: 16 },

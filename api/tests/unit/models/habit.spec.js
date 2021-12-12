@@ -17,7 +17,7 @@ describe('Habit', () => {
         api.close(done);
     });
 
-    describe('index', () => {
+    describe('leaderboard', () => {
         it('resolves with an ordered leaderboard of top streaks and user names upon successful db query', async () => {
             const leaderboard = await Habit.index('Water');
             expect(leaderboard).toEqual([
