@@ -22,8 +22,9 @@ describe('auth endpoints', () => {
                 password: "Test Password",
                 userName: "Test User 4"
             });
-            expect(res.statusCode).toEqual(201);
-            expect(res.body).toEqual({ msg: "User created" });
+
+        expect(res.statusCode).toEqual(201);
+        expect(res.body).toEqual({ msg: "User created" });
     });
 
     it('should login a user into the website', async () => {
@@ -33,8 +34,29 @@ describe('auth endpoints', () => {
                 userEmail: "testUser4@email.com",
                 password: "Test Password"
             });
-            expect(res.statusCode).toEqual(200);
-            expect(res.body).toHaveProperty("success");
-            expect(res.body).toHaveProperty("token");
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty("token");
     });
+
+    it('should retrieve a new access token', async () => {
+        const res = await request(api)
+            .post('/auth/token')
+            .send({
+                token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
+            });
+
+        expect(res.statusCode).toEqual(201);
+        expect(res.body).toHaveProperty("token");
+    });
+
+    it('should log the user out', async () => {
+        const res = await request(api)
+            .delete('/auth/logout')
+            .send({
+                token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
+            });
+        
+        expect(res.statusCode).toEqual(204);
+    })
 });
