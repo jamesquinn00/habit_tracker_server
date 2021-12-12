@@ -40,7 +40,7 @@ describe('auth controller', () => {
 
     describe('token', () => {
         it('returns a new access token and status code 200', async() => {
-            const spy = jest.spyOn(User, 'getRefreshTokens');
+            const spy = jest.spyOn(User, 'findByEmail');
 
             const mockReq = { body: {
                 token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
