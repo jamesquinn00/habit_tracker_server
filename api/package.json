@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Habit Tracker Server",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/kstephano/habit_tracker_server.git"
   },
-  "author": "",
+  "author": "AATTWM",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kstephano/habit_tracker_server/issues"

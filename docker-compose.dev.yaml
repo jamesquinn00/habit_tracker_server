@@ -1,7 +1,7 @@
 version: '3'
 services:
-  server:
-    container_name: debug_dev_server
+  api:
+    container_name: debug_dev_api
     ports:
       - 3000:3000
     environment:

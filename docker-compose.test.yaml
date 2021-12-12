@@ -1,9 +1,7 @@
 version: '3'
 services:
-  server:
-    container_name: debug_test_server
-    ports:
-      - 3000:3000
+  api:
+    container_name: debug_test_api
     environment:
       - DB_NAME=habits
       - DB_CONNECTION=mongodb://AATTWM:habitspass@db:27017
@@ -11,7 +9,6 @@ services:
     depends_on:
       - db
     tty: true
-    command: bash -c "npm install && npm test"
 
   db:
     container_name: debug_test_db
