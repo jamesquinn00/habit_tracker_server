@@ -40,8 +40,25 @@ describe('users controller', () => {
         });
     });
 
+    describe('create', () => {
+        it('creates a new user with a 201 status code', async () => {
+            jest.spyOn(User, 'create')
+                .mockResolvedValue(testUser);
+
+            const mockReq = { body: {
+                userEmail: "testUser1@email.com",
+                password: "password",
+                userName: "test user 1"
+            }}
+
+            await usersController.create(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(201);
+            expect(mockJson).toHaveBeenCalledWith(testUser);
+        });
+    });
+
     describe('update', () => {
-        it("updates a user's streaks (or currentAmount) in a batch", async () => {
+        it("updates a user's streaks (or currentAmount) in a batch with a 201 status code", async () => {
             let testUpdate = [
                 {
                     habitName: "Water",
@@ -57,6 +74,6 @@ describe('users controller', () => {
             await usersController.update(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(testUser);
-        })
-    })
+        });
+    });
 });

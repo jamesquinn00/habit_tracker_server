@@ -1,5 +1,4 @@
 const User = require('../../../models/user');
-const Habit = require('../../../models/habit');
 
 describe('User', () => {
     let api;
@@ -21,13 +20,30 @@ describe('User', () => {
         it('resolves with a user on successful db query', async () => {
             const user = await User.findByEmail("testUser1@email.com");
             expect(user).toBeInstanceOf(User);
-        })
+        });
 
         it('resolves with an error when passed an invalid email', async () => {
             const result = await User.findByEmail("invalid@email.com");
             expect(result).toBe("Invalid user email");
         });
     });
+
+    describe('create', () => {
+        it('resolves with a new user on successful db query', async () => {
+            const data = {
+                userEmail: "testUser1@email.com",
+                password: "password",
+                userName: "test user 1"
+            }
+
+            const user = await User.create(data);
+            expect(user).toHaveProperty('userEmail');
+            expect(user).toHaveProperty('passwordDigest');
+            expect(user).toHaveProperty('refreshTokens');
+            expect(user).toHaveProperty('userName');
+            expect(user).toHaveProperty('habits');
+        });
+    })
 
     describe('update', () => {
         it('resolves with updated user on successful db query', async() => {
