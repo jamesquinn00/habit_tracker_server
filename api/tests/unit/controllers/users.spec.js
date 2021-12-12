@@ -9,6 +9,7 @@ const mockRes = { status: mockStatus }
 const testUser = new User({ 
     userEmail: "testUser1@email.com",
     passwordDigest: "password",
+    refreshTokens: [],
     userName: "test user 1",
     habits: [
         {

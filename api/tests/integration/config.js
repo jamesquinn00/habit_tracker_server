@@ -16,6 +16,7 @@ function resetTestDB() {
                 { 
                     userEmail: "testUser1@email.com",
                     passwordDigest: "password",
+                    refreshTokens: [],
                     userName: "test user 1",
                     habits: [
                         {
@@ -31,6 +32,7 @@ function resetTestDB() {
                 { 
                     userEmail: "testUser2@email.com",
                     passwordDigest: "password",
+                    refreshTokens: [],
                     userName: "test user 2",
                     habits: [
                         {
@@ -54,6 +56,7 @@ function resetTestDB() {
                 { 
                     userEmail: "testUser3@email.com",
                     passwordDigest: "password",
+                    refreshTokens: [],
                     userName: "test user 3",
                     habits: [
                         {

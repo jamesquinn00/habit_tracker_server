@@ -6,6 +6,7 @@ db.users.insertOne(
     { 
         userEmail: "initialUser@email.com",
         passwordDigest: "password",
+        refreshTokens: [],
         userName: "Initial User",
         habits: [
             {
