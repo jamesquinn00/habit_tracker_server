@@ -41,12 +41,29 @@ describe('habits controller', () => {
     describe('create', () => {
         it('returns a new habit for a user with a 201 status code',  async () => {
             jest.spyOn(Habit, 'create')
-                .mockResolvedValue(new Habit(testHabit));
+                .mockResolvedValue(expect.objectContaining({
+                    "habitName": "Read",
+                    "frequency": 1,
+                    "unit": "hour",
+                    "amount": [{ "expected": 1 }, { "current": 0 }],
+                    "streak": [{ "top": 0 }, { "current": 0 }]
+                }));
 
-            const mockReq = { body: testHabit }
+            const mockReq = { body: {
+                habitName: "Read",
+                frequency: 1,
+                unit: "hour",
+                expectedAmount: 1
+            }}
             await habitsController.createHabit(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(new Habit(testHabit));
+            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
+                "habitName": "Read",
+                "frequency": 1,
+                "unit": "hour",
+                "amount": [{ "expected": 1 }, { "current": 0 }],
+                "streak": [{ "top": 0 }, { "current": 0 }]
+            }));
         });
     });
 
@@ -77,7 +94,13 @@ describe('habits controller', () => {
     describe('incrementStreak', () => {
         it('returns an updated habit with an altered "streak" value and status code 201', async () => {
             jest.spyOn(Habit, 'incrementStreak')
-                .mockResolvedValue(testHabit);
+                .mockResolvedValue(expect.objectContaining({
+                    "habitName": "Read",
+                    "frequency": 1,
+                    "unit": "hour",
+                    "amount": [{ "expected": 1 }, { "current": 0 }],
+                    "streak": [{ "top": 1 }, { "current": 1 }]
+                }));
 
             const mockReq = { params: {
                 userEmail: "testUser1@email.com",
@@ -86,7 +109,13 @@ describe('habits controller', () => {
 
             await habitsController.incrementStreak(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(testHabit);
+            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
+                "habitName": "Read",
+                "frequency": 1,
+                "unit": "hour",
+                "amount": [{ "expected": 1 }, { "current": 0 }],
+                "streak": [{ "top": 1 }, { "current": 1 }]
+            }));
         });
     });
 
