@@ -46,7 +46,7 @@ describe('User', () => {
     })
 
     describe('update', () => {
-        it('resolves with updated user on successful db query', async() => {
+        it('resolves with updated user on successful db query', async () => {
             const user = await User.update([
                 { habitName: "Water", amount: 8 }
             ]);
@@ -58,6 +58,13 @@ describe('User', () => {
                 "amount": [{ "expected": 8 }, { "current": 8 }],
                 "streak": [{ top: 5 }, { current: 4 }],
             }));
+        });
+    });
+
+    describe('clearRefreshTokens', () => {
+        it("resolves with expired refresh tokens being removed from a user's data", async () => {
+            const result = await User.clearRefreshTokens("testUser1@email.com");
+            expect(result).toBe('testUser1@email.com: expired tokens cleared');
         });
     });
 });
