@@ -80,7 +80,7 @@ describe('habits endpoints', () => {
         const res = await request(api)
             .put("/habits/testUser1@email.com/Don't Smoke")
             .send({
-                habitName: "No Smoking",
+                newHabitName: "No Smoking",
                 frequency: 7,
                 unit: "boolean",
             });

@@ -41,19 +41,37 @@ describe('habits controller', () => {
     describe('create', () => {
         it('returns a new habit for a user with a 201 status code',  async () => {
             jest.spyOn(Habit, 'create')
-                .mockResolvedValue(new Habit(testHabit));
+                .mockResolvedValue(expect.objectContaining({
+                    "habitName": "Read",
+                    "frequency": 1,
+                    "unit": "hour",
+                    "amount": [{ "expected": 1 }, { "current": 0 }],
+                    "streak": [{ "top": 0 }, { "current": 0 }]
+                }));
 
-            const mockReq = { body: testHabit }
+            const mockReq = { body: {
+                userEmail: "testUser1@email.com",
+                habitName: "Read",
+                frequency: 1,
+                unit: "hour",
+                expectedAmount: 1
+            }}
             await habitsController.createHabit(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(new Habit(testHabit));
+            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
+                "habitName": "Read",
+                "frequency": 1,
+                "unit": "hour",
+                "amount": [{ "expected": 1 }, { "current": 0 }],
+                "streak": [{ "top": 0 }, { "current": 0 }]
+            }));
         });
     });
 
     describe('edit', () => {
         it('returns an updated custom habit for a user with a 201 status code', async () => {
             const updatedHabit = {
-                habitName: "Read",
+                habitName: "Reading",
                 frequency: 1,
                 unit: "minutes",
                 amount: [{ expected: 30 }, { current: 0 }],
@@ -66,7 +84,7 @@ describe('habits controller', () => {
             
             const mockReq = { 
                 params: { userEmail: "testUser1@email.com", habitName: "Read" },
-                body: { unit: "minutes", expectedAmount: 30 }
+                body: { newHabitName: "Reading", unit: "minutes", expectedAmount: 30 }
             }
             await habitsController.edit(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
@@ -77,7 +95,13 @@ describe('habits controller', () => {
     describe('incrementStreak', () => {
         it('returns an updated habit with an altered "streak" value and status code 201', async () => {
             jest.spyOn(Habit, 'incrementStreak')
-                .mockResolvedValue(testHabit);
+                .mockResolvedValue(expect.objectContaining({
+                    "habitName": "Water",
+                    "frequency": 1,
+                    "unit": "cups",
+                    "amount": [{ "expected": 8 }, { "current": 0 }],
+                    "streak": [{ top: 5 }, { current: 4 }],
+                }));
 
             const mockReq = { params: {
                 userEmail: "testUser1@email.com",
@@ -86,7 +110,13 @@ describe('habits controller', () => {
 
             await habitsController.incrementStreak(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(testHabit);
+            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
+                "habitName": "Water",
+                "frequency": 1,
+                "unit": "cups",
+                "amount": [{ "expected": 8 }, { "current": 0 }],
+                "streak": [{ top: 5 }, { current: 4 }],
+            }));
         });
     });
 
