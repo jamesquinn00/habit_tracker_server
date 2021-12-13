@@ -1,18 +1,22 @@
 const request = require('supertest');
 const app = require('../../server');
-const { initDB } = require('../../dbConfig');
+const { initConnection } = require('../../dbConfig');
+
+const dbName = process.env.DB_NAME;
 
 function resetTestDB() {
     return new Promise(async (resolve, reject) => {
         try {
-            // init connection to db
-            const db = await initDB(); 
+            // init client connection to db
+            const client = await initConnection();
+            // init database
+            const db = client.db(dbName);
             // drop the users table
             db.collection("users").drop((err) => {
                 if (err) throw err;
             })
             // insert test data
-            db.users.insertMany([
+            await db.collection("users").insertMany([
                 { 
                     userEmail: "testUser1@email.com",
                     passwordDigest: "password",
@@ -71,7 +75,7 @@ function resetTestDB() {
                 },
             ])
             // close the connection to db
-            db.close(); 
+            client.close(); 
             resolve(`${dbName} reset for testing`);
         } catch (err) {
             reject(`Test DB could not be reset: ${err} in ${err.file}`);
