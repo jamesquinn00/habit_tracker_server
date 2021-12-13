@@ -1,5 +1,3 @@
-const { request } = require("http");
-
 describe('users endpoints', () => {
     let api;
 

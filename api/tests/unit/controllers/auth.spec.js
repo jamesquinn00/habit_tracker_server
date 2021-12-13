@@ -1,4 +1,3 @@
-const { expect } = require('@jest/globals');
 const authController = require('../../../controllers/auth');
 
 const mockSend = jest.fn();
