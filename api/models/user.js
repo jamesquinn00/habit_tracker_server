@@ -57,6 +57,21 @@ module.exports = class User {
                 res(clearedUser);
             } catch (err) {
                 rej(`Error clearing access token for user ${email}`)
+                const clearedUser = {...user, refreshToken: ""}
+                res(clearedUser);
+            } catch (err) {
+                rej(`Error clearing access token for user ${email}`)
+            }
+        })
+    }
+
+    static pushToken (email, token) {
+        return new Promise (async (res, rej) => {
+            try {
+                const db = await initDB();
+                const user = await User.findByEmail(email);
+                
+            }
             }
         })
     }
