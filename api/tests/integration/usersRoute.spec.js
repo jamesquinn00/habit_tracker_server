@@ -48,4 +48,4 @@ describe('users endpoints', () => {
         
         expect(res.statusCode).toEqual(201);
     });
-})
+});
