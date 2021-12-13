@@ -59,7 +59,7 @@ describe('auth controller', () => {
             token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
         }}
 
-        await authController.token(mockReq, mockRes);
+        await authController.logout(mockReq, mockRes);
         expect(spy).toHaveBeenCalled();
         expect(mockStatus).toHaveBeenCalledWith(204);
     });

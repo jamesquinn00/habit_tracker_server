@@ -28,7 +28,7 @@ describe('habits controller', () => {
                 { userName: "test user 3", topStreak: 9 }
             ];
             
-            jest.spyOn(Habit, 'getLeaderboard')
+            jest.spyOn(Habit, 'leaderboard')
                 .mockResolvedValue(leaderboard);
 
             const mockReq = { params: { habitName: "Water" } }
@@ -120,9 +120,9 @@ describe('habits controller', () => {
         });
     });
 
-    describe('delete', () => {
+    describe('destroy', () => {
         it('returns a 204 status code on successful deletion', async () => {
-            jest.spyOn(Habit, 'delete')
+            jest.spyOn(Habit, 'destroy')
                 .mockResolvedValue('Deleted');
             
             const mockReq = { params: {
