@@ -1,4 +1,5 @@
 const authController = require('../../../controllers/auth');
+const User = require('../models/user.spec');
 
 const mockSend = jest.fn();
 const mockJson = jest.fn();
@@ -59,7 +60,7 @@ describe('auth controller', () => {
             token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
         }}
 
-        await authController.logout(mockReq, mockRes);
+        authController.logout(mockReq, mockRes);
         expect(spy).toHaveBeenCalled();
         expect(mockStatus).toHaveBeenCalledWith(204);
     });
