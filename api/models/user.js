@@ -1,11 +1,10 @@
 const { initDB } = require("../dbConfig")
 
-class User {
+module.exports = class User {
     constructor(data) {
         this.userEmail = data.userEmail
         this.passwordDigest = data.passwordDigest
         this.userName = data.userName
-        this.habits = data.habits
         this.refreshTokens = data.refreshTokens
     }
 
@@ -26,8 +25,8 @@ class User {
         return new Promise (async (res, rej) => {
             try {
                 const db = await initDB();
-                const { userEmail, passwordDigest, userName, habits, refreshTokens } = userData
-                await db.users.insertOne({ userEmail, passwordDigest, userName, habits, refreshTokens});
+                const { userEmail, passwordDigest, userName, refreshTokens } = userData
+                await db.collection('users').insertOne({ userEmail, passwordDigest, userName, refreshTokens});
                 const newUser = await User.findByEmail(userEmail);
                 res(newUser);
             } catch (err) {
@@ -36,22 +35,42 @@ class User {
         })
     }
 
-    update () {
-// to be continued.....
+    static update () {
+        return new Promise (async (res, rej) => {
+            try {
+                const db = await initDB();
+                
+                
+            }
+        })
     }
 
-    static clearRefreshTokens (email) {
+    static clearRefreshTokens (email, token) {
         return new Promise (async (res, rej) => {
             try {
                 const db = await initDB();
                 const user = await User.findByEmail(email);
-                const clearedUser = {...user, refreshTokens: []}
+                const clearedUser = await db.collection('users')
+                                            .find({ userEmail: {$eq: `${email}`}})
+                                            .aggregate({$filter: {input: "$refreshTokens", as: "refreshToken", cond: { $ne: [ "$refreshTokens", token]}
+                }})
                 res(clearedUser);
             } catch (err) {
-                rej(`Error clearing refresh tokens for user ${email}`)
+                rej(`Error clearing access token for user ${email}`)
+            }
+        })
+    }
+
+    static pushToken (email, token) {
+        return new Promise (async (res, rej) => {
+            try {
+                const db = await initDB();
+                const user = await User.findByEmail(email);
+                const result = db.collection('users').update({ userEmail: {$eq: `${email}`}}, {$set: { refreshTokens: refreshTokens.push(token)}})
+                res(result)
+            } catch (err) {
+                rej(`Error pushing access token for user ${email}`)
             }
         })
     }
 }
-
-module.exports = User
