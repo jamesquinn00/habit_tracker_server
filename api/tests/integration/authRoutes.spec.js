@@ -36,27 +36,28 @@ describe('auth endpoints', () => {
             });
 
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toHaveProperty("token");
+        expect(res.body).toHaveProperty("accessToken");
+        expect(res.body).toHaveProperty("refreshToken");
     });
 
     it('should retrieve a new access token', async () => {
         const res = await request(api)
             .post('/auth/token')
             .send({
-                token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
+                token: `Bearer ${process.env.TEST_REFRESH_TOKEN_SECRET}`
             });
 
         expect(res.statusCode).toEqual(201);
-        expect(res.body).toHaveProperty("token");
+        expect(res.body).toHaveProperty("accessToken");
     });
 
     it('should log the user out', async () => {
         const res = await request(api)
             .delete('/auth/logout')
             .send({
-                token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
+                token: `Bearer ${process.env.TEST_REFRESH_TOKEN_SECRET}`
             });
         
         expect(res.statusCode).toEqual(204);
-    })
+    });
 });
