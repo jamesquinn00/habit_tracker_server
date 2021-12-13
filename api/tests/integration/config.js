@@ -27,8 +27,8 @@ function resetTestDB() {
                             habitName: "Water",
                             frequency: 1,
                             unit: "cups",
-                            amount: [{ expected: 8 }, { current: 0 }],
-                            streak: [{ top: 5 }, { current: 3 }],
+                            amount: { expected: 8 ,  current: 0 },
+                            streak: { top: 5, current: 3 },
                             lastLog: "2021-12-11T11:31:21.988Z"
                         }
                     ]
@@ -43,16 +43,16 @@ function resetTestDB() {
                             habitName: "Walk the Dog",
                             frequency: 1,
                             unit: "times",
-                            amount: [{ expected: 2 }, { current: 1 }],
-                            streak: [{ top: 10 }, { current: 10 }],
+                            amount: { expected: 2, current: 1 },
+                            streak: { top: 10, current: 10 },
                             lastLog: "2021-12-10T11:31:21.988Z"
                         },
                         {
                             habitName: "Water",
                             frequency: 1,
                             unit: "cups",
-                            amount: [{ expected: 6 }, { current: 4 }],
-                            streak: [{ top: 7 }, { current: 1 }],
+                            amount: { expected: 6, current: 4 },
+                            streak: { top: 7, current: 1 },
                             lastLog: "2021-12-11T11:31:21.988Z"
                         }
                     ]
@@ -67,8 +67,8 @@ function resetTestDB() {
                             habitName: "Running",
                             frequency: 7,
                             unit: "km",
-                            amount: [{ expected: 5 }, { current: 2.7 }],
-                            streak: [{ top: 15 }, { current: 15 }],
+                            amount: { expected: 5, current: 2.7 },
+                            streak: { top: 15, current: 15 },
                             lastLog: "2021-12-09T11:31:21.988Z"
                         }
                     ]
