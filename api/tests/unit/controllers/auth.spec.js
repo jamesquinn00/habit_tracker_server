@@ -54,7 +54,7 @@ describe('auth controller', () => {
     });
 
     describe('logout', () => {
-        const spy = jest.spyOn(User, 'clearRefreshTokens');
+        const spy = jest.spyOn(User, 'clearAccessTokens');
 
         const mockReq = { body: {
             token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
