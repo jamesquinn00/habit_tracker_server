@@ -67,3 +67,10 @@ async function logout(req, res) {
     User.clearAccessTokens(user.userEmail, req.body.token);
     res.sendStatus(204);
 }
+
+module.exports = {
+    register,
+    login,
+    token,
+    logout
+}
