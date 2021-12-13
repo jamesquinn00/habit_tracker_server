@@ -66,10 +66,15 @@ module.exports = class User {
             try {
                 const db = await initDB();
                 const user = await User.findByEmail(email);
+<<<<<<< HEAD
                 const result = db.collection('users').update({ userEmail: {$eq: `${email}`}}, {$set: { refreshTokens: refreshTokens.push(token)}})
                 res(result)
             } catch (err) {
                 rej(`Error pushing access token for user ${email}`)
+=======
+                
+            }
+>>>>>>> ab778c43ccd82d53714d6801afd23994d7cbdac6
             }
         })
     }
