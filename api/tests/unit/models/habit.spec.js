@@ -1,20 +1,23 @@
 const Habit = require('../../../models/habit');
 const User = require('../../../models/user');
+const { initConnection } = require('../../../dbConfig');
+jest.mock('mongodb');
 
 describe('Habit', () => {
-    let api;
-
-    beforeEach(async () => {
-        await resetTestDB();
-    });
+    let connection;
+    let db;
 
     beforeAll(async () => {
-        api = app.listen(5000, () => console.log('Test server running on port 5000'));
+        connection = await initConnection();
+        db = connection.db(process.env.DB_NAME);
     });
 
     afterAll(async () => {
-        console.log('Gracefully stopping test server');
-        api.close(done);
+        await connection.close();
+    });
+
+    beforeEach(async () => {
+        await resetTestDB();
     });
 
     describe('leaderboard', () => {
