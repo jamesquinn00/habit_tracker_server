@@ -5,7 +5,6 @@ class User {
         this.userEmail = data.userEmail
         this.passwordDigest = data.passwordDigest
         this.userName = data.userName
-        this.habits = data.habits
         this.refreshTokens = data.refreshTokens
     }
 
@@ -26,8 +25,8 @@ class User {
         return new Promise (async (res, rej) => {
             try {
                 const db = await initDB();
-                const { userEmail, passwordDigest, userName, habits, refreshTokens } = userData
-                await db.users.insertOne({ userEmail, passwordDigest, userName, habits, refreshTokens});
+                const { userEmail, passwordDigest, userName, refreshTokens } = userData
+                await db.users.insertOne({ userEmail, passwordDigest, userName, refreshTokens});
                 const newUser = await User.findByEmail(userEmail);
                 res(newUser);
             } catch (err) {
@@ -40,15 +39,26 @@ class User {
 // to be continued.....
     }
 
-    static clearRefreshTokens (email) {
+    static clearAccessTokens (email, token) {
         return new Promise (async (res, rej) => {
             try {
                 const db = await initDB();
                 const user = await User.findByEmail(email);
-                const clearedUser = {...user, refreshTokens: []}
+                const clearedUser = {...user, refreshToken: ""}
                 res(clearedUser);
             } catch (err) {
-                rej(`Error clearing refresh tokens for user ${email}`)
+                rej(`Error clearing access token for user ${email}`)
+            }
+        })
+    }
+
+    static pushToken (email, token) {
+        return new Promise (async (res, rej) => {
+            try {
+                const db = await initDB();
+                const user = await User.findByEmail(email);
+                
+            }
             }
         })
     }
