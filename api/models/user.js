@@ -36,15 +36,15 @@ module.exports = class User {
 
     static create (userData) {
         return new Promise (async (res, rej) => {
+            console.log(userData)
             try {
                 const { userEmail, passwordDigest, userName, refreshTokens = [] } = userData;
                 // check for empty or null email/password/usernames
                 if (userEmail === (null || "") || passwordDigest === (null || "") || userName === (null || "")) {
                     throw new Error('Fields cannot be null or empty');
                 }
-
                 const db = await initDB();
-                await db.collection('users').findone({ userEmail, passwordDigest, userName, refreshTokens });
+                await db.collection('users').insertOne({ userEmail, passwordDigest, userName, refreshTokens });
                 const newUser = await User.findByEmail(userEmail);
                 res(newUser);
             } catch (err) {
