@@ -24,8 +24,9 @@ module.exports = class User {
     static findByEmail (email) {
         return new Promise (async (res, rej) => {
             try {
+
                 const db = await initDB();
-                let result = await db.collection('users').find({ userEmail: { $eq: email } }).toArray();
+                let result = await db.collection('users').find({ userEmail: email }).toArray();
                 let user = new User(result[0]);
                 res(user);
             } catch (err) {
@@ -44,9 +45,15 @@ module.exports = class User {
                 }
 
                 const db = await initDB();
-                await db.collection('users').findone({ userEmail, passwordDigest, userName, refreshTokens });
+                await db.collection('users').findOneAndUpdate(
+                    { userEmail: userEmail },
+                    { $set: { userEmail: userEmail, passwordDigest: passwordDigest, userName: userName, refreshTokens:refreshTokens } },
+                    { upsert: true, returnDocument: false }
+                );
+
                 const newUser = await User.findByEmail(userEmail);
-                res(newUser);
+                console.log(newUser)
+                res();
             } catch (err) {
                 rej(`Error creating user: ${err}`);
             }

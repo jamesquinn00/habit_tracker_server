@@ -2,11 +2,15 @@ GET http://localhost:3000/users/
 
 ###
 
+GET http://localhost:3000/users/initialUser@email.com
+
+###
+
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "userEmail": "testUser22@email.com",
+    "userEmail": "testUser2@email.com",
     "password": "Test Password",
     "userName": "Test User 4"
 }
@@ -17,7 +21,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "userEmail": "testUser4@email.com",
+    "userEmail": "initialUser@email.com",
     "password": "Test Password"
 }
 
@@ -25,8 +29,9 @@ Content-Type: application/json
 
 POST http://localhost:3000/auth/token
 Content-Type: application/json
+
 {
-    "token": "Bearer d"
+    "token": "Bearer a68db25e3940becc2b7bfa5834085146560189d013b286552e010b38c038678a5aa7ec459a035b447eed105bdb5d83011d5fd7829d7061f5d6b6d1e7643efd9d"
 }
 
 ###
