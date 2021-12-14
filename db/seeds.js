@@ -5,7 +5,6 @@ db.habits.drop();
 
 db.users.insertOne(
     { 
-        id: 1,
         userEmail: "initialUser@email.com",
         passwordDigest: "password",
         refreshTokens: [],
