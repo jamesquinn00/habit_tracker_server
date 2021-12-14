@@ -1,7 +1,7 @@
 version: '3'
 services:
   api:
-    container_name: debug_dev_api
+    container_name: habit_tracker_dev_api
     ports:
       - 3000:3000
     environment:
@@ -9,13 +9,16 @@ services:
       - DB_CONNECTION=mongodb://AATTWM:habitspass@db:27017
     depends_on:
       - db
-    command: bash -c "npm install && npm run seedDev && npm run dev"
+    command: bash -c "npm install && npm run dev"
 
   db:
-    container_name: debug_dev_db
+    container_name: habit_tracker_dev_db
     volumes:
       - "dbdata:/var/lib/mongodb/data"
     environment:
       - MONGO_INITDB_DATABASE=habits
 volumes:
   dbdata:
+networks:
+  default:
+    name: habit_tracker_api

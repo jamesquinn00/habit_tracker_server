@@ -1,7 +1,7 @@
 version: '3'
 services:
   api:
-    container_name: debug_test_api
+    container_name: habit_tracker_test_api
     environment:
       - DB_NAME=habits
       - DB_CONNECTION=mongodb://AATTWM:habitspass@db:27017
@@ -11,7 +11,7 @@ services:
     tty: true
 
   db:
-    container_name: debug_test_db
+    container_name: habit_tracker_test_db
     volumes:
       - "test_db:/var/lib/mongodb/data"
     environment:
@@ -20,4 +20,4 @@ volumes:
   test_db:
 networks:
   default:
-    name: debug_test
+    name: habit_tracker_test
