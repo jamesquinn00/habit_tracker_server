@@ -29,11 +29,14 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon --legacy-watch index.js",
     "seedDev": "node db/seeds.js",
     "test": "jest --setupFiles ./tests/integration/config.js --watchAll --detectOpenHandles --runInBand --verbose --silent=false"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
