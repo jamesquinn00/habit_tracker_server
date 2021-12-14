@@ -30,8 +30,8 @@ async function login(req, res) {
             const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
             const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
             // add the refresh token to user's data
-            await User.pushToken(refreshToken);
-            res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken });
+            await User.pushToken(user.userEmail, `Bearer ${refreshToken}`);
+            res.status(200).json({ accessToken: `Bearer ${accessToken}`, refreshToken: `Bearer ${refreshToken}` });
         } else {
             throw new Error('User could not be authenticated');
         }
@@ -42,31 +42,44 @@ async function login(req, res) {
 }
 
 async function token(req, res) {
-    const user = await User.findByEmail(req.body.email);
-    if (!user) throw new Error('No user with this email');
-    const payload = { userEmail: user.userEmail, userName: user.userName }
-    const refreshToken = req.body.token;
+    try {
+        const user = await User.findByEmail(req.body.email);
+        if (!user) throw new Error('No user with this email');
+        const payload = { userEmail: user.userEmail, userName: user.userName }
+        const refreshToken = req.body.token;
 
-    // check if refreshToken is null
-    if (refreshToken == null) return res.sendStatus(401)
+        // check if refreshToken is null
+        if (refreshToken == null) throw new Error('null token');
 
-    // check is refreshToken is still valid or has been removed
-    if (!refreshToken.includes(refreshToken)) return res.sendStatus(403);
+        // check is refreshToken is still valid or has been removed
+        if (!user.refreshTokens.includes(refreshToken)) throw new Error('Invalid token');
 
-    // verify the refresh token
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
-        res.status(200).json({ accessToken: accessToken });
-    });
+        // verify the refresh token
+        jwt.verify(refreshToken.split(' ')[1], process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+            if (err) return res.sendStatus(403);
+            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
+            res.status(200).json({ accessToken: `Bearer ${accessToken}` });
+        });
+    } catch (err) {
+        console.log(err);
+        if (err == 'Error: null token') { 
+            return res.sendStatus(401);
+        }
+        res.sendStatus(403);
+    }
 } 
 
 async function logout(req, res) {
-    const user = await User.findByEmail(req.body.email);
-    if (!user) throw new Error('No user with this email');
+    try {
+        console.log(req.body.email);
+        const user = await User.findByEmail(req.body.email);
+        if (!user) throw new Error('No user with this email');
 
-    User.clearRefreshTokens(user.userEmail, req.body.token);
-    res.sendStatus(204);
+        User.clearRefreshTokens(user.userEmail, req.body.token);
+        res.sendStatus(204);
+    } catch (e) {
+        res.sendStatus(500);
+    }
 }
 
 module.exports = {

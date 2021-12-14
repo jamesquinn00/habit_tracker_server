@@ -21,7 +21,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "userEmail": "initialUser@email.com",
+    "email": "initialUser@email.com",
     "password": "Test Password"
 }
 
@@ -31,7 +31,8 @@ POST http://localhost:3000/auth/token
 Content-Type: application/json
 
 {
-    "token": "Bearer a68db25e3940becc2b7bfa5834085146560189d013b286552e010b38c038678a5aa7ec459a035b447eed105bdb5d83011d5fd7829d7061f5d6b6d1e7643efd9d"
+    "email": "initialUser@email.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTUwNDE2Nn0.HJRQ2AQrJ9qk9Huf9FZaixUjpeYGziS07xzEPk4VpF4"
 }
 
 ###
@@ -40,7 +41,8 @@ POST http://localhost:3000/auth/logout
 Content-Type: application/json
 
 {
-    "token": "Bearer a68db25e3940becc2b7bfa5834085146560189d013b286552e010b38c038678a5aa7ec459a035b447eed105bdb5d83011d5fd7829d7061f5d6b6d1e7643efd9d"
+    "email": "initialUser@email.com",
+    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTUwNDcwN30.zTASHCGode_memp_9dLOxw-BMPcEgS7GikJYditFTxE"
 }
 
 ###
