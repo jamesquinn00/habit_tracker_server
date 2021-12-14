@@ -9,7 +9,7 @@ async function register(req, res) {
         const salt = await bcrypt.genSalt();
         const hashed = await bcrypt.hash(req.body.password, salt);
         await User.create({ ...req.body, passwordDigest: hashed });
-        res.status(201).json({ msg: "User created" });
+        res.status(201).json(res);
     } catch (err) {
         res.status(500).json({ err });
     }

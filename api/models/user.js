@@ -12,13 +12,13 @@ module.exports = class User {
         return new Promise (async (res, rej) => {
             try {
                 const db = await initDB();
-                let result = await db.collection('users').find().toArray();
-                let users = results.map(user => new User({userEmail: user.userEmail, userName: user.userName}));
+                const result = await db.collection('users').find().toArray();
+                const users = result.map(user => new User({ ...user }));
                 res(users);
             } catch (err) {
                 rej('Error retrieving all users')
             }
-        })
+        });
     }
 
     static findByEmail (email) {
@@ -37,9 +37,14 @@ module.exports = class User {
     static create (userData) {
         return new Promise (async (res, rej) => {
             try {
+                const { userEmail, passwordDigest, userName, refreshTokens = [] } = userData;
+                // check for empty or null email/password/usernames
+                if (userEmail === (null || "") || passwordDigest === (null || "") || userName === (null || "")) {
+                    throw new Error('Fields cannot be null or empty');
+                }
+
                 const db = await initDB();
-                const { userEmail, passwordDigest, userName, refreshTokens } = userData
-                await db.collection('users').insertOne({ userEmail, passwordDigest, userName, refreshTokens });
+                await db.collection('users').findone({ userEmail, passwordDigest, userName, refreshTokens });
                 const newUser = await User.findByEmail(userEmail);
                 res(newUser);
             } catch (err) {
