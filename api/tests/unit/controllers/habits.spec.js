@@ -7,6 +7,9 @@ const mockStatus = jest.fn(code => ({ send: mockSend, json: mockJson }));
 const mockRes = { status: mockStatus }
 
 const testHabit = {
+    id: 5,
+    userEmail: "testUser3@email.com",
+    userName: "test user 3",
     habitName: "Read",
     frequency: 1,
     unit: "hour",
@@ -20,6 +23,22 @@ describe('habits controller', () => {
 
     afterAll(() => jest.resetAllMocks());
 
+    describe('findByEmail',() => {
+        it('returns habit with appropriate email as well as a 200 success code',async()=>{
+            const mockReq = { 
+                params: { userEmail: "testUser1@email.com" },
+            }
+            
+            jest.spyOn(Habit, 'findByEmail')
+                .mockResolvedValue(testHabit);
+            
+
+            await habitsController.findByEmail(mockReq, mockRes);
+            expect(mockJson).toHaveBeenCalledWith(testHabit);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+    });
+
     describe('leaderboard', () => {
         it('returns a list containing top streaks and user names with 200 status code', async () => {
             const leaderboard = [
@@ -32,7 +51,7 @@ describe('habits controller', () => {
                 .mockResolvedValue(leaderboard);
 
             const mockReq = { params: { habitName: "Water" } }
-            await habitsController.index(mockReq, mockRes);
+            await habitsController.leaderboard(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(200);
             expect(mockJson).toHaveBeenCalledWith(leaderboard);
         });
@@ -41,36 +60,30 @@ describe('habits controller', () => {
     describe('create', () => {
         it('returns a new habit for a user with a 201 status code',  async () => {
             jest.spyOn(Habit, 'create')
-                .mockResolvedValue(expect.objectContaining({
-                    "habitName": "Read",
-                    "frequency": 1,
-                    "unit": "hour",
-                    "amount": [{ "expected": 1 }, { "current": 0 }],
-                    "streak": [{ "top": 0 }, { "current": 0 }]
-                }));
+                .mockResolvedValue(expect.objectContaining(testHabit));
 
-            const mockReq = { body: {
-                userEmail: "testUser1@email.com",
-                habitName: "Read",
-                frequency: 1,
-                unit: "hour",
-                expectedAmount: 1
-            }}
-            await habitsController.createHabit(mockReq, mockRes);
+            const mockReq = { 
+                body: {
+                    userName: "test user 1",
+                    habitName: "Read",
+                    frequency: 1,
+                    unit: "hour",
+                    amount: 1
+                },
+                params: {
+                    userEmail: "testUser1@email.com"
+                }
+            }
+            await habitsController.create(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
-                "habitName": "Read",
-                "frequency": 1,
-                "unit": "hour",
-                "amount": [{ "expected": 1 }, { "current": 0 }],
-                "streak": [{ "top": 0 }, { "current": 0 }]
-            }));
+            expect(mockJson).toHaveBeenCalledWith(testHabit);
         });
     });
 
-    describe('edit', () => {
+    describe('update', () => {
         it('returns an updated custom habit for a user with a 201 status code', async () => {
             const updatedHabit = {
+                id: 5,
                 habitName: "Reading",
                 frequency: 1,
                 unit: "minutes",
@@ -79,57 +92,26 @@ describe('habits controller', () => {
                 lastLog: "2021-12-11T11:31:21.988Z"
             }
             
-            jest.spyOn(Habit, 'edit')
+            jest.spyOn(Habit, 'update')
                 .mockResolvedValue(updatedHabit);
             
             const mockReq = { 
-                params: { userEmail: "testUser1@email.com", habitName: "Read" },
+                params: { userEmail: "testUser1@email.com", id: 5 },
                 body: { newHabitName: "Reading", unit: "minutes", expectedAmount: 30 }
             }
-            await habitsController.edit(mockReq, mockRes);
+            await habitsController.update(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(updatedHabit);
-        });
-    });
-
-    describe('incrementStreak', () => {
-        it('returns an updated habit with an altered "streak" value and status code 201', async () => {
-            jest.spyOn(Habit, 'incrementStreak')
-                .mockResolvedValue(expect.objectContaining({
-                    "habitName": "Water",
-                    "frequency": 1,
-                    "unit": "cups",
-                    "amount": [{ "expected": 8 }, { "current": 0 }],
-                    "streak": [{ top: 5 }, { current: 4 }],
-                }));
-
-            const mockReq = { params: {
-                userEmail: "testUser1@email.com",
-                habitName: "Water"
-            }}
-
-            await habitsController.incrementStreak(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(201);
-            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({
-                "habitName": "Water",
-                "frequency": 1,
-                "unit": "cups",
-                "amount": [{ "expected": 8 }, { "current": 0 }],
-                "streak": [{ top: 5 }, { current: 4 }],
-            }));
         });
     });
 
     describe('destroy', () => {
         it('returns a 204 status code on successful deletion', async () => {
             jest.spyOn(Habit, 'destroy')
-                .mockResolvedValue('Deleted');
+                .mockResolvedValue('Habit 1 deleted');
             
-            const mockReq = { params: {
-                userEmail: "testUser1@email.com",
-                habitName: "Water"
-            }}
-            await habitsController.delete(mockReq, mockRes);
+            const mockReq = { params: { id: 1 } }
+            await habitsController.destroy(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(204);
         });
     });

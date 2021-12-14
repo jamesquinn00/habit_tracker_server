@@ -60,8 +60,8 @@ describe('Habit', () => {
                 amount: 30
             }
 
-            const updatedHabit = await Habit.create(data);
-            expect(updatedHabit).toEqual(objectContaining({
+            const newHabit = await Habit.create(data);
+            expect(newHabit).toEqual(objectContaining({
                 "userEmail": "testUser1@email.com",
                 "habitName": "Read",
                 "frequency": 1,
@@ -71,11 +71,23 @@ describe('Habit', () => {
                 "lastLog": null
             })); 
         });
+
+        it('rejects if a habit with that name already exists for that user', async () => {
+            const data = {
+                userEmail: "testUser1@email.com",
+                habitName: "Water",
+                frequency: 1,
+                unit: "cups",
+                amount: 8
+            }
+            const result = await Habit.create(data);
+            expect(result).toEqual('Habit already exists');
+        });
     });
 
     describe('findById', () => {
         it('resolves with a habit on successful db query', async () => {
-            const habit = await Habit.findById('123456789');
+            const habit = await Habit.findById('1');
             expect(habit).toBeInstanceOf(Habit);
         });
     });
@@ -83,6 +95,7 @@ describe('Habit', () => {
     describe('update', () => {
         it('resolves with an updated habit on successful db query', async () => {
             const data = {
+                id: 2,
                 userEmail:  "testUser2@email.com",
                 habitName: "Walk the Dog",
                 newHabitName: "Walk Dog",

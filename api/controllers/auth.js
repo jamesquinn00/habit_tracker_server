@@ -64,7 +64,7 @@ async function logout(req, res) {
     const user = await User.findByEmail(req.body.email);
     if (!user) throw new Error('No user with this email');
 
-    User.clearAccessTokens(user.userEmail, req.body.token);
+    User.clearRefreshTokens(user.userEmail, req.body.token);
     res.sendStatus(204);
 }
 

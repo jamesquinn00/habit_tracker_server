@@ -1,5 +1,5 @@
 const authController = require('../../../controllers/auth');
-const User = require('../models/user.spec');
+const User = require('../../../models/user');
 
 const mockSend = jest.fn();
 const mockJson = jest.fn();
@@ -54,14 +54,16 @@ describe('auth controller', () => {
     });
 
     describe('logout', () => {
-        const spy = jest.spyOn(User, 'clearAccessTokens');
+        it('logs out the user and clears their refresh tokens', async () => {
+            jest.spyOn(User, 'clearRefreshTokens')
+                .mockResolvedValue([]);
 
-        const mockReq = { body: {
-            token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
-        }}
+            const mockReq = { body: {
+                token: `Bearer ${process.env.TEST_TOKEN_SECRET}`
+            }}
 
-        authController.logout(mockReq, mockRes);
-        expect(spy).toHaveBeenCalled();
-        expect(mockStatus).toHaveBeenCalledWith(204);
+            await authController.logout(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(204);
+        });
     });
 });

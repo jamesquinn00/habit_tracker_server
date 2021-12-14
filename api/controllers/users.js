@@ -9,13 +9,13 @@ async function show(req, res) {
     }
 }
 
-async function update(req, res) {
+async function index(req, res) {
     try {
-        const user = await User.update(req.body)
-        res.status(200).json(user);
+        const users = await User.all
+        res.status(200).json(users);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(404).send(err);
     }
 }
 
-module.exports = { show, update }
+module.exports = { index, show }

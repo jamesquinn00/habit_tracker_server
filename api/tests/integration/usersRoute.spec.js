@@ -14,36 +14,27 @@ describe('users endpoints', () => {
         api.close(done);
     });
 
+    it("should return data for all users", async () => {
+        const res = await request(api).get('/users')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.length).toEqual(3);
+    });
+
     it('should return data for a single user', async () => {
         const res = await request(api).get('/users/testUser1@email.com');
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({ 
+            id: 1,
             userEmail: "testUser1@email.com",
             passwordDigest: "password",
+            refreshTokens: ['Bearer 123'],
             userName: "test user 1",
-            habits: [
-                {
-                    habitName: "Water",
-                    frequency: 1,
-                    unit: "cups",
-                    amount: [{ expected: 8 }, { current: 0 }],
-                    streak: [{ top: 5 }, { current: 3 }],
-                    lastLog: "2021-12-11T11:31:21.988Z"
-                }
-            ]
         });
     });
 
-    it("should increment the current streak for a user's habits in a batch", async () => {
-        const res = await request(api)
-            .put('/users/testUser3@email.com')
-            .send([
-                {
-                    habitName: "Running",
-                    amount: 3
-                }
-            ]);
-        
-        expect(res.statusCode).toEqual(201);
-    });
+    it('should return an error for a user that does not exist', async () => {
+        const res = await request(api).get('/users/dontexist@fake.com');
+        expect(res.statusCode).toEqual(404);
+        expect(res.body).toEqual(err);
+    })
 });

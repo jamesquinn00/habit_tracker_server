@@ -2,10 +2,11 @@ const { initDB } = require('../dbConfig');
 const { ObjectId } = require('bson');
 const defaultHabits = require('../data/defaultHabits');
 
-module.exports = class Habit {
+class Habit {
     constructor(data){
         this.id = data.id,
         this.userEmail = data.userEmail,
+        this.userName = data.userName,
         this.habitName = data.habitName;
         this.frequency = data.frequency;
         this.unit = data.unit;
@@ -24,7 +25,7 @@ module.exports = class Habit {
         return new Promise(async (resolve, reject) => {
             try {
                 const db = await initDB;
-                const habitData = await db.collect('Habits').find({ userEmail }).toArray();
+                const habitData = await db.collection('Habits').find({ userEmail }).toArray();
                 const habit = habitData.map(data => {
                     new Habit({ ...data, id: data._id });
                 });
@@ -67,17 +68,23 @@ module.exports = class Habit {
     /**
      * Create a new habit in the database.
      * 
-     * @param {The data from which to create a new habit, includes: 
+     * @param {The data object from which to create a new habit, includes: 
      *         userEmail, habitName, frequency, unit, and amount} data 
      * @returns The created Habit object.
      */
     static create(data){
         return new Promise (async (resolve, reject) => {
             try {
-                const { userEmail, habitName, frequency, unit, amount } = data;
+                const db = await initDB();
+                // check if habit already exists for user
+                const existinghabitCount = await db.collection('Habits').find({ userEmail, habitName }).count();
+                if (existinghabitCount > 0) reject('Habit already exists');
+
+                const { userEmail, userName, habitName, frequency, unit, amount } = data;
 
                 newHabit = {
                     userEmail: userEmail,
+                    userName: userName,
                     habitName: habitName,
                     frequency: frequency,
                     unit: unit,
@@ -86,9 +93,8 @@ module.exports = class Habit {
                     lastLog: null
                 }
 
-                const db = await initDB();
-                let habitData = await db.collection("users").insertOne({ ...newHabit });
-                let habit = this.findById(habitData.insertedId);
+                const habitData = await db.collection("users").insertOne({ ...newHabit });
+                const habit = this.findById(habitData.insertedId);
                 resolve (habit);
             } catch (err) {
                 reject('Error creating habit');
@@ -119,7 +125,7 @@ module.exports = class Habit {
      * Updates a habit with the attributes passed in. Can be used to 
      * increment the streak or to edit the habit's values.
      * 
-     * @param {The new data to update the habit with} data 
+     * @param {The data object to update the habit with} data 
      * @returns The updated Habit object.
      */
     static update(data) {
@@ -131,7 +137,10 @@ module.exports = class Habit {
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
                     { _id: data.id, userEmail: data.userEmail },
-                    { $set: { ...data } },
+                    { $set: { 
+                        habitName: data.newHabitName,
+                        ...data 
+                    } },
                     { returnDocument: 'after' }
                     );
                 const updatedData = updatedHabitData.value;
