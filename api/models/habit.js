@@ -4,7 +4,6 @@ const defaultHabits = require('../data/defaultHabits');
 
 class Habit {
     constructor(data){
-        console.log(data);
         this.id = data.id,
         this.userEmail = data.userEmail,
         this.userName = data.userName,
@@ -46,19 +45,14 @@ class Habit {
     static leaderboard(habitName){
         return new Promise (async (resolve, reject) => {
             try {
+                console.log(habitName);
                 const db = await initDB();
-                const habitData = await db.collection("habits").aggregate(
-                    { $match: { habitName } },
+                const leaderboard = await db.collection("habits").aggregate([
+                    { $match: { habitName: habitName } },
                     { $sort: { topStreak: -1 } },
                     { $project: { userName: 1, topStreak: 1, _id: 0 } }
-                );
-                // create a list from the data
-                const leaderboard = habitData.rows.map(habitData => { 
-                    return {
-                        userName: habitData.userName,
-                        topStreak: habitData.topStreak
-                    }
-                });
+                ]).toArray();
+
                 resolve (leaderboard);
             } catch (err) {
                 reject('Error getting leaderboard');
@@ -83,7 +77,7 @@ class Habit {
                 const db = await initDB();
                 // find and update ONLY if being inserted
                 const result = await db.collection('habits').findOneAndUpdate(
-                    { userEmail: userEmail },
+                    { userEmail: userEmail, habitName: habitName },
                     { $setOnInsert: {
                         userEmail: userEmail,
                         userName: userName,
@@ -102,7 +96,9 @@ class Habit {
                 if (result.lastErrorObject.updatedExisting === true) {
                     reject('Habit already exists for user');
                 }
-                resolve (result.value);
+                const newHabitId = result.lastErrorObject.upserted.toString();
+                const newHabit = await Habit.findById(newHabitId);
+                resolve (newHabit);
             } catch (err) {
                 reject('Error creating habit');
             }
@@ -139,19 +135,15 @@ class Habit {
         return new Promise (async (resolve, reject) => {
             try {
                 // throw error if new habit name is already a default habit
-                if (defaultHabits.contains(data.newHabitName)) throw new Error("Cannot change name of a custom habit");
-                
+                if (defaultHabits.includes(data.newHabitName)) reject("Cannot change name of a custom habit");
+
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
-                    { _id: data.id, userEmail: data.userEmail },
-                    { $set: { 
-                        habitName: data.newHabitName,
-                        ...data 
-                    } },
-                    { returnDocument: 'after' }
-                    );
-                const updatedData = updatedHabitData.value;
-                const updatedHabit = new Habit({ ...updatedData, id: ObjectId(updatedData.id) });
+                    { _id: ObjectId(data.id) },
+                    { $set: data },
+                    { returnDocument: true, new: true }
+                );
+                const updatedHabit = new Habit({ ...updatedHabitData.value, id: ObjectId(data.id) });
                 resolve(updatedHabit);
             } catch (err) {
                 reject('Error updating habit');

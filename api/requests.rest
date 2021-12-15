@@ -17,8 +17,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "userEmail": "testUser22@email.com",
-    "password": "Test Password"
+    "userEmail": "user@gmail.com",
+    "password": "aaa"
 }
 
 ###
@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/habits/initialUser@email.com
+GET http://localhost:3000/habits/user@gmail.com
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTU2Njc1NSwiZXhwIjoxNjM5NTY3OTU1fQ.P3LA_6ccNq2neBcpiHm_4rTv7uY1dtoNNVZAyJz3Ckw
 
@@ -52,7 +52,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpb
 
 ###
 
-POST http://localhost:3000/habits/initialUser@email.com
+POST http://localhost:3000/habits/user@gmail.com
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTU2MjM2NywiZXhwIjoxNjM5NTYzNTY3fQ.En-3SGP8DsU3DiGhVc667ogDcNRYiJIQTl7Ji49yAFA
 

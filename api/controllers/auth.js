@@ -27,7 +27,7 @@ async function login(req, res) {
             const payload = { userEmail: user.userEmail, userName: user.userName }
             
             // generate access and refresh tokens
-            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
+            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
             const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
             // add the refresh token to user's data
             await User.pushToken(user.userEmail, `Bearer ${refreshToken}`);
