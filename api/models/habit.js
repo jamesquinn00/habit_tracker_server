@@ -1,6 +1,5 @@
 const { initDB } = require('../dbConfig');
 const { ObjectId } = require('bson');
-const defaultHabits = require('../data/defaultHabits');
 
 class Habit {
     constructor(data){
@@ -72,8 +71,6 @@ class Habit {
             try {
                 const { userEmail, userName, habitName, frequency, unit, amount = 1 } = data;
 
-                console.log(data);
-
                 const db = await initDB();
                 // find and update ONLY if being inserted
                 const result = await db.collection('habits').findOneAndUpdate(
@@ -134,9 +131,6 @@ class Habit {
     static update(id, data) {
         return new Promise (async (resolve, reject) => {
             try {
-                // throw error if new habit name is already a default habit
-                if (defaultHabits.includes(data.newHabitName)) reject("Cannot change name of a custom habit");
-
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
                     { _id: ObjectId(id) },
@@ -161,7 +155,9 @@ class Habit {
         return new Promise(async (resolve, reject) => {
             try {
                 const db = await initDB();
-                const result = db.collection('habits').deleteOne({ _id: ObjectId(id) });
+                const result = await db.collection('habits').deleteOne({ _id: ObjectId(id) });
+                // reject the request if no habit was found with the id
+                if (result.deletedCount == 0) reject('Habit does not exist');
                 resolve(result);
             } catch (err) {
                 reject('Error deleting habit');
