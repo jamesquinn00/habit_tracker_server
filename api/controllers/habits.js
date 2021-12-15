@@ -34,7 +34,7 @@ async function create(req, res) {
 
 async function update(req, res) {
     try {
-        const habit = await Habit.update(req.body);
+        const habit = await Habit.update(req.params.id, req.body);
         res.status(201).json(habit);
     } catch (err) {
         res.status(422).send(err);
