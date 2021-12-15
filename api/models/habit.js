@@ -4,7 +4,6 @@ const defaultHabits = require('../data/defaultHabits');
 
 class Habit {
     constructor(data){
-        console.log(data);
         this.id = data.id,
         this.userEmail = data.userEmail,
         this.userName = data.userName,
@@ -78,7 +77,7 @@ class Habit {
                 const db = await initDB();
                 // find and update ONLY if being inserted
                 const result = await db.collection('habits').findOneAndUpdate(
-                    { userEmail: userEmail },
+                    { userEmail: userEmail, habitName: habitName },
                     { $setOnInsert: {
                         userEmail: userEmail,
                         userName: userName,
@@ -97,7 +96,9 @@ class Habit {
                 if (result.lastErrorObject.updatedExisting === true) {
                     reject('Habit already exists for user');
                 }
-                resolve (result.value);
+                const newHabitId = result.lastErrorObject.upserted.toString();
+                const newHabit = await Habit.findById(newHabitId);
+                resolve (newHabit);
             } catch (err) {
                 reject('Error creating habit');
             }
@@ -134,19 +135,28 @@ class Habit {
         return new Promise (async (resolve, reject) => {
             try {
                 // throw error if new habit name is already a default habit
-                if (defaultHabits.contains(data.newHabitName)) throw new Error("Cannot change name of a custom habit");
-                
+                if (defaultHabits.equals(data.newHabitName)) reject("Cannot change name of a custom habit");
+
+                // let params = data;
+
+                // for (let prop in params) if(!params[prop]) delete params[prop];
+
+                // console.log(params);
+
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
-                    { _id: data.id, userEmail: data.userEmail },
+                    { _id: ObjectId(data.id) },
                     { $set: { 
                         habitName: data.newHabitName,
-                        ...data 
+                        frequency: data.frequency,
+                        unit: data.unit,
+                        expectedAmount: data.amount,
+                        lastLog: data.lastLog 
                     } },
-                    { returnDocument: 'after' }
-                    );
-                const updatedData = updatedHabitData.value;
-                const updatedHabit = new Habit({ ...updatedData, id: ObjectId(updatedData.id) });
+                    { returnDocument: true, new: true }
+                );
+                console.log(updatedHabitData);
+                const updatedHabit = new Habit({ ...updatedHabitData.value, id: ObjectId(data.id) });
                 resolve(updatedHabit);
             } catch (err) {
                 reject('Error updating habit');
