@@ -4,14 +4,17 @@ const defaultHabits = require('../data/defaultHabits');
 
 class Habit {
     constructor(data){
+        console.log(data);
         this.id = data.id,
         this.userEmail = data.userEmail,
         this.userName = data.userName,
         this.habitName = data.habitName;
         this.frequency = data.frequency;
         this.unit = data.unit;
-        this.amount = data.amount;
-        this.streak = data.streak;
+        this.expectedAmount = data.expectedAmount;
+        this.currentAmount = data.currentAmount;
+        this.topStreak = data.topStreak;
+        this.currentStreak = data.currentStreak;
         this.lastLog = data.lastLog
     };
 
@@ -21,17 +24,15 @@ class Habit {
      * @param {The email of the user to retrieve the habits for} userEmail 
      * @returns A list of habits for a single user.
      */
-    static findByEmail(userEmail) {
+    static findByEmail(email) {
         return new Promise(async (resolve, reject) => {
             try {
-                const db = await initDB;
-                const habitData = await db.collection('Habits').find({ userEmail }).toArray();
-                const habit = habitData.map(data => {
-                    new Habit({ ...data, id: data._id });
-                });
-                resolve(habit);
+                const db = await initDB();
+                const habitData = await db.collection('habits').find({ userEmail: email }).toArray();
+                const habits = habitData.map(data => new Habit({ ...data, id: data._id }));
+                resolve(habits);
             } catch (err) {
-                reject(`Habit couldn't be found for ${userEmail}`);
+                reject(`Habits couldn't be found for ${email}`);
             }
         });
     }
@@ -48,8 +49,8 @@ class Habit {
                 const db = await initDB();
                 const habitData = await db.collection("habits").aggregate(
                     { $match: { habitName } },
-                    { $sort: { "streak.top": -1 } },
-                    { $project: { userName: 1, "streak.top": 1, _id: 0 } }
+                    { $sort: { topStreak: -1 } },
+                    { $project: { userName: 1, topStreak: 1, _id: 0 } }
                 );
                 // create a list from the data
                 const leaderboard = habitData.rows.map(habitData => { 
@@ -75,27 +76,33 @@ class Habit {
     static create(data){
         return new Promise (async (resolve, reject) => {
             try {
+                const { userEmail, userName, habitName, frequency, unit, amount = 1 } = data;
+
+                console.log(data);
+
                 const db = await initDB();
-                // check if habit already exists for user
-                const existinghabitCount = await db.collection('Habits').find({ userEmail, habitName }).count();
-                if (existinghabitCount > 0) reject('Habit already exists');
-
-                const { userEmail, userName, habitName, frequency, unit, amount } = data;
-
-                newHabit = {
-                    userEmail: userEmail,
-                    userName: userName,
-                    habitName: habitName,
-                    frequency: frequency,
-                    unit: unit,
-                    amount: [{ expected: amount}, { current: 0 }],
-                    streak: [{ top: 0 }, { current: 0 }],
-                    lastLog: null
+                // find and update ONLY if being inserted
+                const result = await db.collection('habits').findOneAndUpdate(
+                    { userEmail: userEmail },
+                    { $setOnInsert: {
+                        userEmail: userEmail,
+                        userName: userName,
+                        habitName: habitName,
+                        frequency: frequency,
+                        unit: unit,
+                        expectedAmount: amount,
+                        currentAmount: 0,
+                        topStreak: 0,
+                        currentStreak: 0,
+                        lastLog: null
+                    } },
+                    { upsert: true, returnDocument: true }
+                );
+                // check if habit already existed 
+                if (result.lastErrorObject.updatedExisting === true) {
+                    reject('Habit already exists for user');
                 }
-
-                const habitData = await db.collection("users").insertOne({ ...newHabit });
-                const habit = this.findById(habitData.insertedId);
-                resolve (habit);
+                resolve (result.value);
             } catch (err) {
                 reject('Error creating habit');
             }
