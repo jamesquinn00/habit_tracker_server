@@ -14,6 +14,7 @@ async function initConnection() {
 
 async function initDB() {
     const client = await initConnection();
+    console.log(`connected to database ${dbName}`);
     return client.db(dbName);
 }
 
