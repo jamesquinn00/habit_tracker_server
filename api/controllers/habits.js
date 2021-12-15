@@ -44,7 +44,7 @@ async function update(req, res) {
 async function destroy(req, res) {
     try {
         const result = await Habit.destroy(req.params.id);
-        res.status(204).send(`Habit ${red.params.id} deleted`);
+        res.status(204).json(result);
     } catch (err) {
         res.status(404).send(err);
     }
