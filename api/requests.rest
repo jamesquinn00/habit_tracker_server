@@ -6,7 +6,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "userEmail": "testUser22@email.com",
+    "email": "testUser2@email.com",
     "password": "Test Password",
     "userName": "Test User 4"
 }
@@ -36,6 +36,31 @@ Content-Type: application/json
 
 {
     "token": "Bearer a68db25e3940becc2b7bfa5834085146560189d013b286552e010b38c038678a5aa7ec459a035b447eed105bdb5d83011d5fd7829d7061f5d6b6d1e7643efd9d"
+}
+
+###
+
+GET http://localhost:3000/habits/initialUser@email.com
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTU2Njc1NSwiZXhwIjoxNjM5NTY3OTU1fQ.P3LA_6ccNq2neBcpiHm_4rTv7uY1dtoNNVZAyJz3Ckw
+
+###
+
+GET http://localhost:3000/habits/leaderboard/Water
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTU2NDUwMCwiZXhwIjoxNjM5NTY1NzAwfQ.GbcV7nhhHVMA9o_sfGQl4494sXxseZ56ZwM_y52vSXg
+
+###
+
+POST http://localhost:3000/habits/initialUser@email.com
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJpbml0aWFsVXNlckBlbWFpbC5jb20iLCJ1c2VyTmFtZSI6IkluaXRpYWwgVXNlciIsImlhdCI6MTYzOTU2MjM2NywiZXhwIjoxNjM5NTYzNTY3fQ.En-3SGP8DsU3DiGhVc667ogDcNRYiJIQTl7Ji49yAFA
+
+{
+    "userName": "Initial User",
+    "habitName": "Do drugs",
+    "frequency": 1,
+    "unit": "boolean"
 }
 
 ###
