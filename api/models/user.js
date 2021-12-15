@@ -44,15 +44,18 @@ module.exports = class User {
                 }
 
                 const db = await initDB();
-                db.collection('users').findOneAndUpdate(
+                // find and update ONLY if being inserted
+                const result = db.collection('users').findOneAndUpdate(
                     { userEmail: userEmail },
-                    { $set: { userEmail: userEmail, passwordDigest: passwordDigest, userName: userName, refreshTokens:refreshTokens } },
+                    { $setOnInsert: { userEmail: userEmail, passwordDigest: passwordDigest, userName: userName, refreshTokens:refreshTokens } },
                     { upsert: true, returnDocument: false }
                 );
+                // check if user already exists
+                if (result.lastErrorObject.updatedExisting === true) {
+                    reject('Error: User already exists');
+                }
 
-                const newUser = await User.findByEmail(userEmail);
-                console.log(newUser)
-                res(newUser);
+                res(result.value);
             } catch (err) {
                 rej(`Error creating user: ${err}`);
             }
