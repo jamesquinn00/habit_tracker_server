@@ -46,19 +46,14 @@ class Habit {
     static leaderboard(habitName){
         return new Promise (async (resolve, reject) => {
             try {
+                console.log(habitName);
                 const db = await initDB();
-                const habitData = await db.collection("habits").aggregate(
-                    { $match: { habitName } },
+                const leaderboard = await db.collection("habits").aggregate([
+                    { $match: { habitName: habitName } },
                     { $sort: { topStreak: -1 } },
                     { $project: { userName: 1, topStreak: 1, _id: 0 } }
-                );
-                // create a list from the data
-                const leaderboard = habitData.rows.map(habitData => { 
-                    return {
-                        userName: habitData.userName,
-                        topStreak: habitData.topStreak
-                    }
-                });
+                ]).toArray();
+
                 resolve (leaderboard);
             } catch (err) {
                 reject('Error getting leaderboard');
