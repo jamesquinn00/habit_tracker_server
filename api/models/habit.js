@@ -135,27 +135,14 @@ class Habit {
         return new Promise (async (resolve, reject) => {
             try {
                 // throw error if new habit name is already a default habit
-                if (defaultHabits.equals(data.newHabitName)) reject("Cannot change name of a custom habit");
-
-                // let params = data;
-
-                // for (let prop in params) if(!params[prop]) delete params[prop];
-
-                // console.log(params);
+                if (defaultHabits.includes(data.newHabitName)) reject("Cannot change name of a custom habit");
 
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
                     { _id: ObjectId(data.id) },
-                    { $set: { 
-                        habitName: data.newHabitName,
-                        frequency: data.frequency,
-                        unit: data.unit,
-                        expectedAmount: data.amount,
-                        lastLog: data.lastLog 
-                    } },
+                    { $set: data },
                     { returnDocument: true, new: true }
                 );
-                console.log(updatedHabitData);
                 const updatedHabit = new Habit({ ...updatedHabitData.value, id: ObjectId(data.id) });
                 resolve(updatedHabit);
             } catch (err) {
