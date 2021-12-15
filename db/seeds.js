@@ -14,13 +14,15 @@ db.users.insertOne(
 
 db.habits.insertOne(
     {
-        id: 1,
         userEmail: "initialUser@email.com",
         userName: "Initial User",
         habitName: "Water",
         frequency: 1,
-        amount: [{ expected: 3 }, { current: 0 }],
-        streak: [{ top: 5 }, { current: 3 }],
+        unit: "cups",
+        expectedAmount: 3,
+        currentAmount: 0,
+        topStreak: 5,
+        currentStreak: 3,
         lastLog: "2021-12-11T11:31:21.988Z"
     }
 );
