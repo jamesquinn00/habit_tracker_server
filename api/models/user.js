@@ -36,7 +36,6 @@ module.exports = class User {
 
     static create (userData) {
         return new Promise (async (res, rej) => {
-            console.log(userData)
             try {
                 const { userEmail, passwordDigest, userName, refreshTokens = [] } = userData;
                 // check for empty or null email/password/usernames
@@ -51,7 +50,6 @@ module.exports = class User {
                 );
 
                 const newUser = await User.findByEmail(userEmail);
-                console.log(newUser)
                 res(newUser);
             } catch (err) {
                 rej(`Error creating user: ${err}`);
