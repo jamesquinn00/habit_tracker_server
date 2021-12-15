@@ -1,6 +1,5 @@
 const { initDB } = require('../dbConfig');
 const { ObjectId } = require('bson');
-const defaultHabits = require('../data/defaultHabits');
 
 class Habit {
     constructor(data){
@@ -72,8 +71,6 @@ class Habit {
             try {
                 const { userEmail, userName, habitName, frequency, unit, amount = 1 } = data;
 
-                console.log(data);
-
                 const db = await initDB();
                 // find and update ONLY if being inserted
                 const result = await db.collection('habits').findOneAndUpdate(
@@ -90,15 +87,15 @@ class Habit {
                         currentStreak: 0,
                         lastLog: null
                     } },
-                    { upsert: true, returnDocument: true }
+                    { upsert: true, returnDocument: "after" }
                 );
                 // check if habit already existed 
                 if (result.lastErrorObject.updatedExisting === true) {
                     reject('Habit already exists for user');
                 }
-                const newHabitId = result.lastErrorObject.upserted.toString();
-                const newHabit = await Habit.findById(newHabitId);
-                resolve (newHabit);
+                
+                const updatedHabit = new Habit({ ...result.value, id: ObjectId(result.value._id) });
+                resolve (updatedHabit);
             } catch (err) {
                 reject('Error creating habit');
             }
@@ -131,19 +128,16 @@ class Habit {
      * @param {The data object to update the habit with} data 
      * @returns The updated Habit object.
      */
-    static update(data) {
+    static update(id, data) {
         return new Promise (async (resolve, reject) => {
             try {
-                // throw error if new habit name is already a default habit
-                if (defaultHabits.includes(data.newHabitName)) reject("Cannot change name of a custom habit");
-
                 const db = await initDB();
                 const updatedHabitData = await db.collection('habits').findOneAndUpdate(
-                    { _id: ObjectId(data.id) },
+                    { _id: ObjectId(id) },
                     { $set: data },
-                    { returnDocument: true, new: true }
+                    { returnDocument: "after" }
                 );
-                const updatedHabit = new Habit({ ...updatedHabitData.value, id: ObjectId(data.id) });
+                const updatedHabit = new Habit({ ...updatedHabitData.value, id: ObjectId(id) });
                 resolve(updatedHabit);
             } catch (err) {
                 reject('Error updating habit');
@@ -161,7 +155,9 @@ class Habit {
         return new Promise(async (resolve, reject) => {
             try {
                 const db = await initDB();
-                const result = db.collection('habits').deleteOne({ _id: ObjectId(id) });
+                const result = await db.collection('habits').deleteOne({ _id: ObjectId(id) });
+                // reject the request if no habit was found with the id
+                if (result.deletedCount == 0) reject('Habit does not exist');
                 resolve(result);
             } catch (err) {
                 reject('Error deleting habit');
